@@ -1,0 +1,28 @@
+version: '3.9'
+services:
+  junit-tp:
+    build: .
+    container_name: junit-tp-container
+    volumes:
+      - .:/app
+      - maven-repo:/root/.m2
+    working_dir: /app
+    environment:
+      - MAVEN_OPTS=-Xmx512m
+    ports:
+      - "9999:8080"
+    command: tail -f /dev/null
+
+  test-runner:
+    build: .
+    container_name: test-runner
+    volumes:
+      - .:/app
+      - maven-repo:/root/.m2
+    working_dir: /app
+    command: mvn clean test
+    depends_on:
+      - junit-tp
+
+volumes:
+  maven-repo:
